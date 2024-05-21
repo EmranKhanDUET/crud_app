@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' ;
+import 'package:http/http.dart';
 
 class AddProductScreen extends StatefulWidget {
   const AddProductScreen({super.key});
@@ -12,14 +12,15 @@ class AddProductScreen extends StatefulWidget {
 
 class _AddProductScreenState extends State<AddProductScreen> {
   final TextEditingController _nameTEController = TextEditingController();
-  final TextEditingController _productCodeTEController = TextEditingController();
+  final TextEditingController _productCodeTEController =
+      TextEditingController();
   final TextEditingController _unitPriceTEController = TextEditingController();
   final TextEditingController _quantityTEController = TextEditingController();
   final TextEditingController _totalPriceTEController = TextEditingController();
   final TextEditingController _imageTEController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  bool _addNewProductInProgress=false;
+  bool _addNewProductInProgress = false;
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +50,8 @@ class _AddProductScreenState extends State<AddProductScreen> {
                 ),
                 const SizedBox(
                   height: 16,
-                ),TextFormField(
+                ),
+                TextFormField(
                   controller: _productCodeTEController,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   decoration: const InputDecoration(
@@ -133,13 +135,12 @@ class _AddProductScreenState extends State<AddProductScreen> {
                   height: 16,
                 ),
                 Visibility(
-                  visible: _addNewProductInProgress==false,
-                  replacement: CircularProgressIndicator(),
+                  visible: _addNewProductInProgress == false,
+                  replacement: const CircularProgressIndicator(),
                   child: ElevatedButton(
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
                         _addProduct();
-
                       }
                     },
                     child: const Text('Add'),
@@ -154,11 +155,8 @@ class _AddProductScreenState extends State<AddProductScreen> {
   }
 
   Future<void> _addProduct() async {
-
-    _addNewProductInProgress=true;
-    setState(() {
-
-    });
+    _addNewProductInProgress = true;
+    setState(() {});
 
     const String addNewProductUrl =
         'https://crud.teamrabbil.com/api/v1/CreateProduct';
@@ -181,10 +179,26 @@ class _AddProductScreenState extends State<AddProductScreen> {
     print(response.body);
     print(response.headers);
 
-    _addNewProductInProgress=false;
-    setState(() {
-
-    });
+    _addNewProductInProgress = false;
+    setState(
+      () {},
+    );
+    if (response.statusCode == 200) {
+      _nameTEController.clear();
+      _productCodeTEController.clear();
+      _unitPriceTEController.clear();
+      _quantityTEController.clear();
+      _totalPriceTEController.clear();
+      _imageTEController.clear();
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          backgroundColor: Colors.green,
+          content: Text('Product added Successfully')));
+    }
+    else{
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          backgroundColor: Colors.red,
+          content: Text('Add new Product failed,Try Again')));
+    }
   }
 
   @override
