@@ -29,15 +29,18 @@ class _ProductListScreenState extends State<ProductListScreen> {
       appBar: AppBar(
         title: const Text('Product List'),
       ),
-      body: Visibility(
-        visible: _getProductListInProgress == false,
-        replacement: const Center(
-          child: CircularProgressIndicator(),
-        ),
-        child: ListView.separated(
-          itemCount: products.length,
-          itemBuilder: (context, index) => _buildProductItem(index, products),
-          separatorBuilder: (_, __) => const Divider(),
+      body: RefreshIndicator(
+        onRefresh: _getProductList,
+        child: Visibility(
+          visible: _getProductListInProgress == false,
+          replacement: const Center(
+            child: CircularProgressIndicator(),
+          ),
+          child: ListView.separated(
+            itemCount: products.length,
+            itemBuilder: (context, index) => _buildProductItem(index, products),
+            separatorBuilder: (_, __) => const Divider(),
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
@@ -53,7 +56,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
 
   Widget _buildProductItem(index, products) {
     return ListTile(
-      // leading: Image.network(products[index].image,width: 60,height: 60,),
+      leading: Image.network(products[index].image,width: 60,height: 60,),
       title: Text(products[index].productName),
 
       subtitle: Wrap(

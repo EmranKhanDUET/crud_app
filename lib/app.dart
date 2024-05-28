@@ -64,6 +64,7 @@ class CrudApp extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8)
             ),
             padding: const EdgeInsets.symmetric(horizontal: 16,vertical: 12),
+
           ),
         )
     );
