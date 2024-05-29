@@ -10,7 +10,7 @@ class CrudApp extends StatelessWidget {
       title: 'Crud App',
       debugShowCheckedModeBanner: false,
       home: const ProductListScreen(),
-      themeMode: ThemeMode.system,
+      themeMode: ThemeMode.light,
       theme: _lightTheme(),
       darkTheme: _darkTheme(),
     );

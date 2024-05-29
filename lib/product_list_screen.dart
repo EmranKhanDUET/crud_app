@@ -45,10 +45,14 @@ class _ProductListScreenState extends State<ProductListScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
-        onPressed: () {
-          Navigator.of(context).push(MaterialPageRoute(
+        onPressed: () async{
+
+          final result= await Navigator.of(context).push(MaterialPageRoute(
             builder: (context) => const AddProductScreen(),
           ));
+          if(result==true){
+            _getProductList();
+          }
         },
       ),
     );
@@ -56,9 +60,12 @@ class _ProductListScreenState extends State<ProductListScreen> {
 
   Widget _buildProductItem(index, products) {
     return ListTile(
-      leading: Image.network(products[index].image,width: 60,height: 60,),
+      leading: Image.network(
+        products[index].image,
+        width: 60,
+        height: 60,
+      ),
       title: Text(products[index].productName),
-
       subtitle: Wrap(
         spacing: 16,
         children: [
@@ -70,15 +77,22 @@ class _ProductListScreenState extends State<ProductListScreen> {
       trailing: Wrap(
         children: [
           IconButton(
-              onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => const UpdateProductScreen(),
-                ));
+              onPressed: () async {
+                final result = await Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => UpdateProductScreen(
+                      product: products[index],
+                    ),
+                  ),
+                );
+                if (result == true) {
+                  _getProductList();
+                }
               },
               icon: const Icon(Icons.edit)),
           IconButton(
               onPressed: () {
-                deleteConfirmationAlertDialog(context: context);
+                deleteConfirmationAlertDialog(context: context,id: products[index].id);
               },
               icon: const Icon(Icons.delete)),
         ],
@@ -124,11 +138,10 @@ class _ProductListScreenState extends State<ProductListScreen> {
           backgroundColor: Colors.red,
           content: Text('Get Product List Faild,Try again !')));
     }
-
   }
 
   deleteConfirmationAlertDialog({
-    required context,
+    required context, required id
   }) {
     showDialog(
         context: context,
@@ -145,6 +158,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
                   child: const Text('No')),
               TextButton(
                   onPressed: () {
+                    _deleteProduct(id);
                     Navigator.pop(context);
                   },
                   child: const Text('Yes,delete.')),
@@ -152,4 +166,37 @@ class _ProductListScreenState extends State<ProductListScreen> {
           );
         });
   }
+
+  Future<void> _deleteProduct(String id) async {
+
+
+    _getProductListInProgress = true;
+    setState(() {});
+    products.clear();
+
+     String deleteProductUrl =
+        'https://crud.teamrabbil.com/api/v1/DeleteProduct/$id';
+    Uri deleteProductUri = Uri.parse(deleteProductUrl);
+    Response response = await get(deleteProductUri);
+    if (response.statusCode == 200) {
+ _getProductList();
+
+
+      _getProductListInProgress = false;
+      setState(() {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            backgroundColor: Colors.green,
+            content: Text('Deletion of Product  Successfully')));
+      });
+    } else {
+      _getProductListInProgress = false;
+      setState(() {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            backgroundColor: Colors.red,
+            content: Text('Deletion of Product  Failed, Try Again')));
+      });
+    }
+  }
+
+
 }

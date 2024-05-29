@@ -141,6 +141,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
                         _addProduct();
+
                       }
                     },
                     child: const Text('Add'),
@@ -175,9 +176,6 @@ class _AddProductScreenState extends State<AddProductScreen> {
       body: jsonEncode(inpData),
       headers: {'content-type': 'application/json'},
     );
-    print(response.statusCode);
-    print(response.body);
-    print(response.headers);
 
     _addNewProductInProgress = false;
     setState(
@@ -193,6 +191,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           backgroundColor: Colors.green,
           content: Text('Product added Successfully')));
+      Navigator.pop(context,true);
     }
     else{
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
