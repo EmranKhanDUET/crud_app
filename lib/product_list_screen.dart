@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:crud_app/add_product_screen.dart';
 import 'package:crud_app/update_product_screen.dart';
 import 'package:flutter/material.dart';
@@ -45,12 +44,11 @@ class _ProductListScreenState extends State<ProductListScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
-        onPressed: () async{
-
-          final result= await Navigator.of(context).push(MaterialPageRoute(
+        onPressed: () async {
+          final result = await Navigator.of(context).push(MaterialPageRoute(
             builder: (context) => const AddProductScreen(),
           ));
-          if(result==true){
+          if (result == true) {
             _getProductList();
           }
         },
@@ -92,7 +90,8 @@ class _ProductListScreenState extends State<ProductListScreen> {
               icon: const Icon(Icons.edit)),
           IconButton(
               onPressed: () {
-                deleteConfirmationAlertDialog(context: context,id: products[index].id);
+                deleteConfirmationAlertDialog(
+                    context: context, id: products[index].id);
               },
               icon: const Icon(Icons.delete)),
         ],
@@ -140,9 +139,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
     }
   }
 
-  deleteConfirmationAlertDialog({
-    required context, required id
-  }) {
+  deleteConfirmationAlertDialog({required context, required id}) {
     showDialog(
         context: context,
         builder: (context) {
@@ -168,20 +165,16 @@ class _ProductListScreenState extends State<ProductListScreen> {
   }
 
   Future<void> _deleteProduct(String id) async {
-
-
     _getProductListInProgress = true;
     setState(() {});
     products.clear();
 
-     String deleteProductUrl =
+    String deleteProductUrl =
         'https://crud.teamrabbil.com/api/v1/DeleteProduct/$id';
     Uri deleteProductUri = Uri.parse(deleteProductUrl);
     Response response = await get(deleteProductUri);
     if (response.statusCode == 200) {
- _getProductList();
-
-
+      _getProductList();
       _getProductListInProgress = false;
       setState(() {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -197,6 +190,4 @@ class _ProductListScreenState extends State<ProductListScreen> {
       });
     }
   }
-
-
 }
